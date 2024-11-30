@@ -17,8 +17,7 @@ jobs:
       - name: Prepare secrets and environments
         uses: singulcode/decrypt-export-env-action@master
         with:
-          repoUrl: git@gist.github.com:f6281d95065d3b942f13a8436768669f.git
-          # token: ${{ secrets.GH_PAT }}
+          repoUrl: https://gist.github.com/f6281d95065d3b942f13a8436768669f.git
           # path: .tmpsecrets
           envFile: .tmpsecrets/.develop.ci-cd
           ageSecretKey: ${{ secrets.AGE_SECRET_KEY }}
@@ -40,7 +39,7 @@ jobs:
 
 Field | Required | Example
 ------------ | ------------  | -------------
-**repoUrl** | YES | Ex: `git@gist.github.com:f6281d95065d3b942f13a8436768669f.git`
+**repoUrl** | YES | Ex: `https://gist.github.com/f6281d95065d3b942f13a8436768669f.git`
 **path** | NO | Ex: `.tmpsecrets` (default) | 
 **ageSecretKey** | YES | Ex: `AGE-SECRET-KEY123------------------------------------------------------456`
 **envFile** | YES | Ex: `.tmpsecrets/.env1|.tmpsecrets/.env2`

@@ -3,11 +3,8 @@ description: 'GitHub Action that decrypt env files (using Age) from a gist url a
 author: 'singulcode'
 inputs:
   repoUrl:
-    description: 'You repo url, example git@gist.github.com:f6281d95065d3b942f13a8436768669f.git'
+    description: 'You repo url, example https://gist.github.com/f6281d95065d3b942f13a8436768669f.git'
     required: true
-  token:
-    description: 'Github Personal Acess Token'
-    required: false
   path:
     description: 'Path to store gist files'
     required: false
@@ -24,47 +21,34 @@ inputs:
   maskEnv:
     description: 'Regex to mask specific variables matching the filter, separated by `|`'
     required: false
+    default: 'MYSQL|KEY|TOKEN|PASSWORD|SECRET|SID|IDENTITY|AWS|GCP|CRYPTO|ENCRYPTION|ADDDRESS|IP|DATABASE|CERT'
 
 runs:
   using: composite
   steps:
+    - name: Setup age
+      uses: AnimMouse/setup-age@v1
+
     - name: Clone secret repo
       run: |
         set -e
 
-        # if [ -z "${{ inputs.token }}" ]; then
-        #   git clone "${{ inputs.gistPath }}" "${{ inputs.path }}"
-        # else
-        #   git clone "https://${{ inputs.token }}@gist.github.com/${{ inputs.gistPath }}" "${{ inputs.path }}"
-        # fi
+        echo "Repo: ${{ inputs.repoUrl }}"
 
-        git config --global --add safe.directory $(pwd)
+        git clone ${{ inputs.repoUrl }} ${{ inputs.path }}
 
-        if [ -z "${{ inputs.token }}" ]; then
-          echo "#!/bin/bash\necho ${{ github.token }}" > ~/git_askpass.sh
-        else
-          echo "#!/bin/bash\necho ${{ inputs.token }}" > ~/git_askpass.sh
-        fi
-
-        chmod +x ~/git_askpass.sh
-
-        GIT_ASKPASS=~/git_askpass.sh git clone "${{ inputs.repoUrl }}" "${{ inputs.path }}"
-
-        if [ -d "${{ inputs.path }}" ]; then
-          echo "Cloned ${{ inputs.repoUrl }} to ${{ inputs.path }}"
-        else
+        if [ ! -d "${{ inputs.path }}" ]; then
           echo "Error: Couldn't clone ${{ inputs.repoUrl }}."
           exit 1
         fi
       shell: bash
 
-    - name: Setup age
-      uses: AnimMouse/setup-age@v1
-
     - name: Decrypt environments
       run: |
         set -e
-        source ${{ inputs.path }}/decrypt.sh "${{ inputs.ageSecretKey }}"
+        echo "source ${{ inputs.path }}/decrypt.sh ${{ inputs.ageSecretKey }}"
+        source ${{ inputs.path }}/decrypt.sh ${{ inputs.ageSecretKey }}
+        ls -la ${{ inputs.path }}
       shell: bash
 
     - name: Export secrets and environments to runner
