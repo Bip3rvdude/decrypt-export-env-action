@@ -2,9 +2,12 @@ name: 'decrypt-export-env-action'
 description: 'GitHub Action that decrypt env files (using Age) from a gist url and export to runner, with optional masking'
 author: 'singulcode'
 inputs:
-  gistUrl:
-    description: 'You gist or repo url, example git@gist.github.com:f6281d95065d3b942f13a8436768669f.git'
+  repoUrl:
+    description: 'You repo url, example git@gist.github.com:f6281d95065d3b942f13a8436768669f.git'
     required: true
+  token:
+    description: 'Github Personal Acess Token'
+    required: false
   path:
     description: 'Path to store gist files'
     required: false
@@ -25,17 +28,32 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Clone secret repository
+    - name: Clone secret repo
       run: |
         set -e
 
-        git clone "${{ inputs.gistUrl }}" "${{ inputs.path }}"
+        # if [ -z "${{ inputs.token }}" ]; then
+        #   git clone "${{ inputs.gistPath }}" "${{ inputs.path }}"
+        # else
+        #   git clone "https://${{ inputs.token }}@gist.github.com/${{ inputs.gistPath }}" "${{ inputs.path }}"
+        # fi
+
+        git config --global --add safe.directory $(pwd)
+
+        if [ -z "${{ inputs.token }}" ]; then
+          echo "#!/bin/bash\necho ${{ github.token }}" > ~/git_askpass.sh
+        else
+          echo "#!/bin/bash\necho ${{ inputs.token }}" > ~/git_askpass.sh
+        fi
+
+        chmod +x ~/git_askpass.sh
+
+        GIT_ASKPASS=~/git_askpass.sh git clone "${{ inputs.repoUrl }}" "${{ inputs.path }}"
 
         if [ -d "${{ inputs.path }}" ]; then
-          echo "Cloned ${{ inputs.gistUrl }} successfully."
-          echo "Access the content using \"cd ${{ inputs.path }}.\""
+          echo "Cloned ${{ inputs.repoUrl }} to ${{ inputs.path }}"
         else
-          echo "Error: Couldn't clone ${{ inputs.gistUrl }}. Check the inputs."
+          echo "Error: Couldn't clone ${{ inputs.repoUrl }}."
           exit 1
         fi
       shell: bash

@@ -1,0 +1,42 @@
+name: "test"
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  integration:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run
+        uses: ./
+        with:
+          repoUrl: git@gist.github.com:f6281d95065d3b942f13a8436768669f.git
+          # token: ${{ secrets.GH_PAT }}
+          envFile: .tmpsecrets/.develop.ci-cd
+          ageSecretKey: ${{ secrets.AGE_SECRET_KEY }}
+
+      - name: Check
+        run: |
+          set -e
+
+          echo "PUBLIC_ENV: ${PUBLIC_ENV}"
+          echo "RANDOM_ENV: ${RANDOM_ENV}"
+          echo "MYSQL_ENV: ${MYSQL_ENV}"
+          echo "KEY_ENV: ${KEY_ENV}"
+          echo "TOKEN_ENV: ${TOKEN_ENV}"
+          echo "PASSWORD_ENV: ${PASSWORD_ENV}"
+          echo "SID_ENV: ${SID_ENV}"
+          echo "SECRET_ENV: ${SECRET_ENV}"
+          echo "IDENTITY_ENV: ${IDENTITY_ENV}"
+          echo "AWS_ENV: ${AWS_ENV}"
+          echo "GCP_ENV: ${GCP_ENV}"
+          echo "CRYPTO_ENV: ${CRYPTO_ENV}"
+          echo "ENCRYPTION_ENV: ${ENCRYPTION_ENV}"
+          echo "IP_ENV: ${IP_ENV}"
+          echo "DATABASE_ENV: ${DATABASE_ENV}"
+          echo "CERT_ENV: ${CERT_ENV}"

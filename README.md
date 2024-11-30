@@ -17,27 +17,32 @@ jobs:
       - name: Prepare secrets and environments
         uses: singulcode/decrypt-export-env-action@master
         with:
-          gistUrl: ${{ env.SECRET_GIST_URL }}
-          path: .tmpsecrets
-          envFile: .tmpsecrets/.env1|.tmpsecrets/.env2
+          repoUrl: git@gist.github.com:f6281d95065d3b942f13a8436768669f.git
+          # token: ${{ secrets.GH_PAT }}
+          # path: .tmpsecrets
+          envFile: .tmpsecrets/.develop.ci-cd
           ageSecretKey: ${{ secrets.AGE_SECRET_KEY }}
       # ....
       - name: Test
         run: |
-          echo $PUBLIC_ENV
-          echo $RANDOM_ENV
-          echo $MASKED_ACCESS_KEY
-          echo $MASKED_SOME_SECRET
-          echo $SOME_EMAIL_ALSO_MAKSED
+          set -e
+
+          echo "PUBLIC_ENV: ${PUBLIC_ENV}"
+          echo "RANDOM_ENV: ${RANDOM_ENV}"
+          echo "MYSQL_ENV: ${MYSQL_ENV}"
+          echo "KEY_ENV: ${KEY_ENV}"
+          echo "TOKEN_ENV: ${TOKEN_ENV}"
+          echo "PASSWORD_ENV: ${PASSWORD_ENV}"
+          echo "SECRET_ENV: ${SECRET_ENV}"
 ```
 
 # Options
 
 Field | Required | Example
 ------------ | ------------  | -------------
-**gistUrl** | YES | Ex: `git@gist.github.com:f6281d95065d3b942f13a8436768669f.git`
+**repoUrl** | YES | Ex: `git@gist.github.com:f6281d95065d3b942f13a8436768669f.git`
 **path** | NO | Ex: `.tmpsecrets` (default) | 
 **ageSecretKey** | YES | Ex: `AGE-SECRET-KEY123------------------------------------------------------456`
 **envFile** | YES | Ex: `.tmpsecrets/.env1|.tmpsecrets/.env2`
 **excludeEnv** | NO | Ex: `EXCLUDE_ENV|RANDOM_ENV_TEST`
-**maskEnv** | NO | Ex: `SOME_ENV_NEED|OTHER_ENV|.*RANDOM_ENV|PREFIX_.*`
+**maskEnv** | NO | Ex: `SOME_ENV_NEED|OTHER_ENV|.*RANDOM_ENV|PREFIX_.*`, [default](https://github.com/datphan/export-env-action?tab=readme-ov-file#-mask-default-mysqlkeytokenpasswordsecretsididentityawsgcpcryptoencryptionadddressipdatabasecert)
