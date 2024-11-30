@@ -1,6 +1,9 @@
 name: 'decrypt-export-env-action'
-description: 'GitHub Action to decrypt and export environment variables from a remote Gist or Repo (using Age), while masking sensitive information.'
+description: 'Decrypt and export environment variables from a remote Gist or Repo (using Age), while masking sensitive information.'
 author: 'singulcode'
+branding:
+  icon: 'activity'
+  color: 'green'
 inputs:
   repoUrl:
     description: 'Your repo url, example https://gist.github.com/f6281d95065d3b942f13a8436768669f.git'
