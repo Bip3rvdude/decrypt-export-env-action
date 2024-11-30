@@ -1,0 +1,64 @@
+name: 'decrypt-export-env-action'
+description: 'GitHub Action that decrypt env files (using Age) from a gist url and export to runner, with optional masking'
+author: 'singulcode'
+inputs:
+  gistUrl:
+    description: 'You gist or repo url, example git@gist.github.com:f6281d95065d3b942f13a8436768669f.git'
+    required: true
+  path:
+    description: 'Path to store gist files'
+    required: false
+    default: '.tmpsecrets'
+  ageSecretKey:
+    description: 'Secret key to decrypt Age files'
+    required: true
+  envFile:
+    description: 'Path to .env files, separated by `|`'
+    required: true
+  excludeEnv:
+    description: 'Regex to exclude specific variables matching the filter, separated by `|`'
+    required: false
+  maskEnv:
+    description: 'Regex to mask specific variables matching the filter, separated by `|`'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Clone secret repository
+      run: |
+        set -e
+
+        git clone "${{ inputs.gistUrl }}" "${{ inputs.path }}"
+
+        if [ -d "${{ inputs.path }}" ]; then
+          echo "Cloned ${{ inputs.gistUrl }} successfully."
+          echo "Access the content using \"cd ${{ inputs.path }}.\""
+        else
+          echo "Error: Couldn't clone ${{ inputs.gistUrl }}. Check the inputs."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Setup age
+      uses: AnimMouse/setup-age@v1
+
+    - name: Decrypt environments
+      run: |
+        set -e
+        source ${{ inputs.path }}/decrypt.sh "${{ inputs.ageSecretKey }}"
+      shell: bash
+
+    - name: Export secrets and environments to runner
+      uses: datphan/export-env-action@master
+      with:
+        envFile: ${{ inputs.envFile }}
+        filter: ${{ inputs.excludeEnv }}
+        mask: ${{ inputs.maskEnv }}
+
+    - name: Cleanup secrets
+      run: |
+        set -e
+        rm -rf ${{ inputs.path }}
+      shell: bash
+      
