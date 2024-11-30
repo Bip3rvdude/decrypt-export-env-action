@@ -1,6 +1,6 @@
 # Usage
 
-Fist you need a gist or repo to store your env secrets
+First, you need a gist or repo to store your encrypted env
 
 - Make a fork of this [gist](https://gist.github.com/datphan/f6281d95065d3b942f13a8436768669f) and store it as `SECRET_GIST_URL`
 
@@ -74,4 +74,4 @@ CERT_ENV: ***
 | **ageSecretKey** | YES | `AGE-SECRET-KEY123------------------------------------------------------456` |
 | **envFile** | YES | `.tmpsecrets/.env1\|.tmpsecrets/.env2` |
 | **excludeEnv** | NO | `EXCLUDE_ENV\|RANDOM_ENV_TEST` |
-| **maskEnv** | NO | `SOME_ENV_NEED\|OTHER_ENV\|.*RANDOM_ENV\|PREFIX_.*`, [default](https://github.com/datphan/export-env-action?tab=readme-ov-file#-mask-default-mysqlkeytokenpasswordsecretsididentityawsgcpcryptoencryptionadddressipdatabasecert) |
+| **maskEnv** | NO | `SOME_ENV_NEED\|OTHER_ENV\|.*RANDOM_ENV\|PREFIX_.*`, [see default](https://github.com/datphan/export-env-action?tab=readme-ov-file#-mask-default-mysqlkeytokenpasswordsecretsididentityawsgcpcryptoencryptionadddressipdatabasecert) |
