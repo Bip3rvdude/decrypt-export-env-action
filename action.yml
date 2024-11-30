@@ -1,12 +1,12 @@
 name: 'decrypt-export-env-action'
-description: 'GitHub Action that decrypt env files (using Age) from a gist url and export to runner, with optional masking'
+description: 'GitHub Action to decrypt and export environment variables from a remote Gist or Repo (using Age), while masking sensitive information.'
 author: 'singulcode'
 inputs:
   repoUrl:
-    description: 'You repo url, example https://gist.github.com/f6281d95065d3b942f13a8436768669f.git'
+    description: 'Your repo url, example https://gist.github.com/f6281d95065d3b942f13a8436768669f.git'
     required: true
   path:
-    description: 'Path to store gist files'
+    description: 'Path to store repo files'
     required: false
     default: '.tmpsecrets'
   ageSecretKey:
